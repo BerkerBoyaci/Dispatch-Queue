@@ -19,18 +19,18 @@ struct TypeErasure {
 
     template <typename T>
     TypeErasure(T&& obj) :
-            wrappedObject{ std::make_unique<Wrapper<T>>(std::forward<T>(obj)) }
+            wrappedObject{ std::make_unique<Model < T>>(std::forward<T>(obj)) }
     {
     }
 
-    struct ObjectBase {
+    struct Concept {
         virtual void operator()() = 0;
-        virtual ~ObjectBase() = default;
+        virtual ~Concept() = default;
     };
 
     template <typename T>
-    struct Wrapper : public ObjectBase {
-        Wrapper(T&& t) noexcept :
+    struct Model : public Concept {
+        Model(T&& t) noexcept :
                 wrappedObject(std::forward<T>(t))
         {
         }
@@ -52,7 +52,7 @@ struct TypeErasure {
 #endif
     }
 
-    std::unique_ptr<ObjectBase> wrappedObject;
+    std::unique_ptr<Concept> wrappedObject;
 };
 
 
